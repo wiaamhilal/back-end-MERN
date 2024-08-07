@@ -39,11 +39,17 @@ const postSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    dislikes: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,
-    toJSON: {virtuals: true},
-    toObject: {virtuals: true},
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 

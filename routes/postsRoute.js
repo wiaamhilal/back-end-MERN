@@ -7,15 +7,16 @@ const {
   updatePostCtrl,
   updatePostImageCtrl,
   toggleLikeCtrl,
+  toggleDislikeCtrl,
 } = require("../controllers/postsController");
 const photoUpload = require("../middlewares/photoUpload");
 const validateObjedtId = require("../middlewares/validateObjedtId");
-const {verifyToken} = require("../middlewares/verifyToken");
+const { verifyToken } = require("../middlewares/verifyToken");
 
 const router = require("express").Router();
 
 // /api/posts
-router 
+router
   .route("/")
   .post(verifyToken, photoUpload.single("image"), createPostCtrl)
   .get(getAllPostsCtrl);
@@ -42,4 +43,10 @@ router
 
 // /api/posts/like/:id
 router.route("/like/:id").put(validateObjedtId, verifyToken, toggleLikeCtrl);
+
+// /api/posts/dislike/:id
+router
+  .route("/dislike/:id")
+  .put(validateObjedtId, verifyToken, toggleDislikeCtrl);
+
 module.exports = router;

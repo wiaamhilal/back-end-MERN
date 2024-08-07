@@ -279,34 +279,41 @@ module.exports.toggleLikeCtrl = asyncHander(async (req, res) => {
   res.status(200).json(post);
 });
 
-// get comment form the client
-module.exports.createClientCommentCtrl = asyncHander(async (req, res) => {
-  // 2-validate the data
-  const { error } = validateCreateClientComment(req.body);
-  if (error) res.status(400).json({ message: error.details[0].message });
+//-----------------------------
+// desc toggle dislike
+// route /api/posts/:id
+// method put
+// access only the logged in user
+//-----------------------------
+module.exports.toggleDislikeCtrl = asyncHander(async (req, res) => {
+  let post = await Post.findById(req.params.id);
+  if (!post) {
+    return res.status(404).json({ message: "post not found" });
+  }
+  const isPostAlreadyLiked = post.dislikes.find(
+    (userId) => userId.toString() === req.user.id
+  );
+  if (isPostAlreadyLiked) {
+    post = await Post.findByIdAndUpdate(
+      req.params.id,
+      {
+        $pull: {
+          dislikes: req.user.id,
+        },
+      },
+      { new: true }
+    );
+  } else {
+    post = await Post.findByIdAndUpdate(
+      req.params.id,
+      {
+        $push: {
+          dislikes: req.user.id,
+        },
+      },
+      { new: true }
+    );
+  }
 
-  const user = await User.findById(req.user.id);
-
-  // 4-create a new client comment and save it in DB
-  const clientComment = await UserComment.create({
-    text: req.body.text,
-    username: user.username,
-    imageURL: user.profilePhoto.url,
-    userID: user.id,
-  });
-
-  // 5- send response to the client
-  res.status(201).json(clientComment);
-});
-
-module.exports.getAllClientCommentsCtrl = asyncHander(async (req, res) => {
-  const clientComments = await UserComment.find().sort({ createdAt: -1 });
-  // .populate("user", ["-password"]);
-
-  res.status(200).json(clientComments);
-});
-
-module.exports.deleteAllClientCommentsCtrl = asyncHander(async (req, res) => {
-  await UserComment.deleteMany({});
-  res.status(200).json({ message: "the comment has bees delete it" });
+  res.status(200).json(post);
 });

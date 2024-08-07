@@ -3,12 +3,15 @@ const {
   getAllCommentCtrl,
   deleteCommentCtrl,
   updateCommentCtrl,
-} = require("../controllers/commentsController");
-const {
   createClientCommentCtrl,
-  getAllClientCommentsCtrl,
   deleteAllClientCommentsCtrl,
-} = require("../controllers/postsController");
+  getAllClientCommentsCtrl,
+} = require("../controllers/commentsController");
+// const {
+//   createClientCommentCtrl,
+//   getAllClientCommentsCtrl,
+//   deleteAllClientCommentsCtrl,
+// } = require("../controllers/postsController");
 const validateObjedtId = require("../middlewares/validateObjedtId");
 const {
   verifyToken,
