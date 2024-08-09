@@ -41,6 +41,7 @@ module.exports.createPostCtrl = asyncHander(async (req, res) => {
   // 4-create a new post and save it in DB
   const post = await Post.create({
     title: req.body.title,
+    price: req.body.price,
     description: req.body.description,
     category: req.body.category,
     user: req.user.id,

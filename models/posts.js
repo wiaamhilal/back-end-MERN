@@ -17,6 +17,11 @@ const postSchema = new mongoose.Schema(
       trim: true,
       minlength: 10,
     },
+    price: {
+      type: Number,
+      required: true,
+      trim: true,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -69,6 +74,7 @@ const validateCreatePost = (obj) => {
     title: joi.string().trim().min(2).max(200).required(),
     description: joi.string().trim().min(10).required(),
     category: joi.string().trim().required(),
+    price: joi.number().required(),
   });
   return schema.validate(obj);
 };
@@ -79,6 +85,7 @@ const validateUpdatePost = (obj) => {
     title: joi.string().trim().min(2).max(200),
     description: joi.string().trim().min(10),
     category: joi.string().trim(),
+    price: joi.number().required(),
   });
   return schema.validate(obj);
 };
