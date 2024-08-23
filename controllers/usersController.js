@@ -10,6 +10,8 @@ const {
   cloudinaryReoveMultipleImage,
 } = require("../utils/cloudinary");
 const fs = require("fs");
+const { timeStamp } = require("console");
+const sendEmail = require("../utils/sendEmail");
 
 //-----------------------------
 // desc get all users profile
@@ -174,3 +176,80 @@ module.exports.deleteUserPfofileCtrl = asyncHander(async (req, res) => {
 //   const user = req.user;
 
 // })
+
+module.exports.createLocationUserCtrl = asyncHander(async (req, res) => {
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    return res.status(404).json({ message: "user not found" });
+  }
+  const updatedUser = await User.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: {
+        location: {
+          phone: req.body.phone,
+          arya: req.body.arya,
+          street: req.body.street,
+          building: req.body.building,
+        },
+      },
+    },
+    { new: true }
+  );
+  res.status(200).json(updatedUser);
+});
+
+// module.exports.getLocationUserCtrl = asyncHander(async (req, res) => {
+//   let user = await User.findById(req.params.id);
+//   if (!user) {
+//     return res.status(404).json({ message: "user not found" });
+//   }
+//   const updatedUser = await User.findByIdAndUpdate(
+//     req.params.id,
+//     {
+//       $set: {
+//         location: {
+//           phone: req.body.phone,
+//           arya: req.body.arya,
+//           street: req.body.street,
+//           building: req.body.building,
+//         },
+//       },
+//     },
+//     { new: true }
+//   );
+//   res.status(200).json(updatedUser);
+// });
+
+module.exports.createUserOrdersCtrl = asyncHander(async (req, res) => {
+  let user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({ message: "user not found" });
+  }
+  const updatedUser = await User.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: {
+        orders: req.body.orders,
+      },
+    },
+    { new: true }
+  );
+  res.status(200).json(updatedUser);
+});
+
+module.exports.sendingConfirmToTheClient = asyncHander(async (req, res) => {
+  let user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({ message: "user not found" });
+  }
+  // creating HTML template
+  const htmlTemplate = `
+      <div>
+      <h2>thank you ${user.username} for your order</h2>
+      <p> we will send your order as soom as posible <p>
+      </div>`;
+
+  // sending email
+  await sendEmail(user.email, "the order has been confirmed", htmlTemplate);
+});

@@ -25,6 +25,12 @@ const userSchema = new mongoose.Schema(
       trim: true,
       minlength: 8,
     },
+    location: {
+      type: Object,
+    },
+    orders: {
+      type: Array,
+    },
     profilePhoto: {
       type: Object,
       default: {

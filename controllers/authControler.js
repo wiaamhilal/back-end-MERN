@@ -8,16 +8,16 @@ const {
   validateLoginUser,
 } = require("../models/users");
 const VerivacationToken = require("../models/verifacation");
-const {link} = require("joi");
+const { link } = require("joi");
 
 module.exports.registerUserCtrl = asyncHander(async (req, res) => {
-  const {error} = validateRegisterUser(req.body);
+  const { error } = validateRegisterUser(req.body);
   if (error) {
-    return res.status(400).json({message: error.details[0].message});
+    return res.status(400).json({ message: error.details[0].message });
   }
-  let user = await User.findOne({email: req.body.email});
+  let user = await User.findOne({ email: req.body.email });
   if (user) {
-    return res.status(400).json({message: "the user is already exist"});
+    return res.status(400).json({ message: "the user is already exist" });
   }
   const salt = await bcrypt.genSalt(10);
   const hashePassword = await bcrypt.hash(req.body.password, salt);
@@ -57,14 +57,14 @@ module.exports.registerUserCtrl = asyncHander(async (req, res) => {
 // login user
 
 module.exports.loginUserCtrl = asyncHander(async (req, res) => {
-  const {error} = validateLoginUser(req.body);
+  const { error } = validateLoginUser(req.body);
   if (error) {
-    return res.status(400).json({message: error.details[0].message});
+    return res.status(400).json({ message: error.details[0].message });
   }
   // if user exist
-  const user = await User.findOne({email: req.body.email});
+  const user = await User.findOne({ email: req.body.email });
   if (!user) {
-    return res.status(400).json({message: "invalid email"});
+    return res.status(400).json({ message: "invalid email" });
   }
   //if passwrd corect
   const ispasswordMatch = await bcrypt.compare(
@@ -72,36 +72,40 @@ module.exports.loginUserCtrl = asyncHander(async (req, res) => {
     user.password
   );
   if (!ispasswordMatch) {
-    return res.status(400).json({message: "invalid password"});
+    return res.status(400).json({ message: "invalid password" });
   }
 
   if (!user.isAccountVerified) {
-    let verificationToken = await VerivacationToken.findOne({
-      userId: user._id,
+    res.status(400).json({
+      message:
+        "we send to you an email please verify your email address than you can login",
     });
-    if (!verificationToken) {
-      verificationToken = new VerivacationToken({
-        userId: user._id,
-        token: crypto.randomBytes(32).toString("hex"),
-      });
-      await verificationToken.save();
-    }
+    //     let verificationToken = await VerivacationToken.findOne({
+    //       userId: user._id,
+    //     });
+    //     if (!verificationToken) {
+    //       verificationToken = new VerivacationToken({
+    //         userId: user._id,
+    //         token: crypto.randomBytes(32).toString("hex"),
+    //       });
+    //       await verificationToken.save();
+    //     }
 
-    // making the link
-    const link = `http://localhost:3000/users/${user._id}/verify/${verivacationToken.token}`;
+    //     // making the link
+    //     const link = `http://localhost:3000/users/${user._id}/verify/${verivacationToken.token}`;
 
-    // puting the link into html tmeplete
-    const htmlTemplate = `
-<div>
-  <p>click on the link below to verify your email</p>
-  <a href="${link}">verify</a>
-</div>
-`;
-    // sending email to the user
-    await sedEmail(user.email, "verify your email", htmlTemplate);
-      res.status(400).json({
-        message: "we send to you an email please vefify your email address",
-      })
+    //     // puting the link into html tmeplete
+    //     const htmlTemplate = `
+    // <div>
+    //   <p>click on the link below to verify your email</p>
+    //   <a href="${link}">verify</a>
+    // </div>
+    // `;
+    //     // sending email to the user
+    //     await sedEmail(user.email, "verify your email", htmlTemplate);
+    //       res.status(400).json({
+    //         message: "we send to you an email please vefify your email address",
+    //       })
   }
   const token = user.generateAuthToken();
   res.status(200).json({
@@ -110,6 +114,7 @@ module.exports.loginUserCtrl = asyncHander(async (req, res) => {
     profilePhoto: user.profilePhoto,
     token,
     username: user.username,
+    isAccountVerified: user.isAccountVerified,
   });
 });
 
@@ -117,7 +122,7 @@ module.exports.loginUserCtrl = asyncHander(async (req, res) => {
 module.exports.verifyUserAcountCtrl = asyncHander(async (req, res) => {
   const user = await User.findById(req.params.userId);
   if (!user) {
-    return res.status(400).json({message: "invalid link"});
+    return res.status(400).json({ message: "invalid link" });
   }
 
   const verificationToken = await VerivacationToken.findOne({
@@ -126,7 +131,7 @@ module.exports.verifyUserAcountCtrl = asyncHander(async (req, res) => {
   });
 
   if (!verificationToken) {
-    return res.status(400).json({message: "invalid link"});
+    return res.status(400).json({ message: "invalid link" });
   }
   user.isAccountVerified = true;
 
@@ -134,5 +139,5 @@ module.exports.verifyUserAcountCtrl = asyncHander(async (req, res) => {
 
   await verificationToken.deleteOne();
 
-  res.status(200).json({message: "your account verified"});
+  res.status(200).json({ message: "your account verified" });
 });
