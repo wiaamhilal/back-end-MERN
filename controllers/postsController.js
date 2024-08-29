@@ -68,15 +68,13 @@ module.exports.getAllPostsCtrl = asyncHander(async (req, res) => {
   const POST_PER_PAGE = 8;
   const { pageNumber, category } = req.query;
   let posts;
-
   if (pageNumber) {
     posts = await Post.find()
       .skip((pageNumber - 1) * POST_PER_PAGE)
       .limit(POST_PER_PAGE)
       .sort({ createdAt: -1 })
       .populate("user", ["-password"]);
-  }
-  if (category) {
+  } else if (category) {
     posts = await Post.find({ category })
       .sort({ createdAt: -1 })
       .populate("user", ["-password"]);

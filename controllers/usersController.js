@@ -226,7 +226,19 @@ module.exports.createUserOrdersCtrl = asyncHander(async (req, res) => {
   if (!user) {
     return res.status(404).json({ message: "user not found" });
   }
-  const updatedUser = await User.findByIdAndUpdate(
+
+  let updatedUser = await User.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: {
+        orders: [],
+      },
+    },
+    { new: true }
+  );
+  // res.status(200).json(updatedUser);
+
+  updatedUser = await User.findByIdAndUpdate(
     req.params.id,
     {
       $set: {
