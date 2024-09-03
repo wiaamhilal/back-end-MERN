@@ -5,6 +5,10 @@ const {
   validateUpdateComment,
 } = require("../models/comments");
 const { User } = require("../models/users");
+const {
+  validateCreateClientComment,
+  UserComment,
+} = require("../models/userComent");
 
 //-----------------------------
 // desc greate a new coment
@@ -120,6 +124,21 @@ module.exports.getAllClientCommentsCtrl = asyncHandler(async (req, res) => {
 });
 
 module.exports.deleteAllClientCommentsCtrl = asyncHandler(async (req, res) => {
+  // await UserComment.deleteMany({ userID: req.user._id });
   await UserComment.deleteMany({});
   res.status(200).json({ message: "the comment has bees delete it" });
+});
+
+module.exports.deleteClientCommentsCtrl = asyncHandler(async (req, res) => {
+  const comment = await UserComment.findById(req.params.id);
+  if (!comment) {
+    res.status(404).json({ message: "comment not found" });
+  } else if (req.user.isAdmin || req.user.id === comment.toString()) {
+    await UserComment.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "the comment has been deleted" });
+  } else {
+    res
+      .status(403)
+      .json({ message: "unauthoraized, you cant delete the comment" });
+  }
 });

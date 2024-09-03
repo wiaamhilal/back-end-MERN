@@ -6,6 +6,7 @@ const {
   createClientCommentCtrl,
   deleteAllClientCommentsCtrl,
   getAllClientCommentsCtrl,
+  deleteClientCommentsCtrl,
 } = require("../controllers/commentsController");
 // const {
 //   createClientCommentCtrl,
@@ -36,7 +37,15 @@ router
 router
   .route("/client-comment")
   .post(verifyToken, createClientCommentCtrl)
-  .get(getAllClientCommentsCtrl)
-  .delete(verfyTokenAndAdmin, deleteAllClientCommentsCtrl);
+  .get(verfyTokenAndAdmin, getAllClientCommentsCtrl);
 
+// delete all the client comments
+router
+  .route("/client-comment/delete-all")
+  .post(verfyTokenAndAdmin, deleteAllClientCommentsCtrl);
+
+// delete one of the client comments
+router
+  .route("/client-comment/:id")
+  .delete(validateObjedtId, verifyToken, deleteClientCommentsCtrl);
 module.exports = router;

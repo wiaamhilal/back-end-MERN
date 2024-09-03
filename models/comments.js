@@ -48,6 +48,14 @@ function validateUpdateComment(obj) {
   return schema.validate(obj);
 }
 
+// validate create comment
+// function validateCreateClientComment(obj) {
+//   const schema = joi.object({
+//     postId: joi.string().required().label("post ID"),
+//     text: joi.string().trim().required(),
+//   });
+//   return schema.validate(obj);
+// }
 module.exports = {
   Comment,
   validateCreateComment,
