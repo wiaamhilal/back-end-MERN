@@ -46,6 +46,12 @@ app.use("/api/comments", require("./routes/commentsRoute"));
 app.use("/api/category", require("./routes/categoryRoute"));
 app.use("/api/password", require("./routes/passwordRoute"));
 
+app.use(express.static("../front/build"));
+
+app.get("*", (req, res) => {
+  res.sendFile(`${__dirname}../front/build/index.html`);
+});
+
 // error handler middleware
 app.use(notFound);
 app.use(errorHandler);
