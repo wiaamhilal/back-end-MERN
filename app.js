@@ -35,7 +35,8 @@ app.use(hpp());
 //cors policy
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin:
+      "https://66d975b9473d9aead4ddf42a--curious-caramel-dd0426.netlify.app",
   })
 );
 
@@ -46,11 +47,11 @@ app.use("/api/comments", require("./routes/commentsRoute"));
 app.use("/api/category", require("./routes/categoryRoute"));
 app.use("/api/password", require("./routes/passwordRoute"));
 
-app.use(express.static("../front/build"));
+// app.use(express.static("../front/build"));
 
-app.get("*", (req, res) => {
-  res.sendFile(`${__dirname}../front/build/index.html`);
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(`${__dirname}../front/build/index.html`);
+// });
 
 // error handler middleware
 app.use(notFound);
