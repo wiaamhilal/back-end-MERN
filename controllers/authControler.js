@@ -36,7 +36,7 @@ module.exports.registerUserCtrl = asyncHander(async (req, res) => {
   await verivacationToken.save();
 
   // making the link
-  const link = `http://localhost:3000/users/${user._id}/verify/${verivacationToken.token}`;
+  const link = `https://frontend-mern-eclz.onrender.com/users/${user._id}/verify/${verivacationToken.token}`;
 
   // puting the link into html tmeplete
   const htmlTemplate = `

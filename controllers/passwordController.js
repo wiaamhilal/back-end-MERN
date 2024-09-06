@@ -34,7 +34,7 @@ module.exports.sendResetPasswordCtrl = asyncHander(async (req, res) => {
     await verivicationToken.save();
   }
   // creating link
-  const link = `http://localhost:3000/reset-password/${user._id}/${verivicationToken.token}`;
+  const link = `https://frontend-mern-eclz.onrender.com/reset-password/${user._id}/${verivicationToken.token}`;
 
   // creating HTML template
   const htmlTemplate = `<a href="${link}">click here to reset your password</a>`;
