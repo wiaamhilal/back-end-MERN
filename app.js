@@ -35,7 +35,7 @@ app.use(hpp());
 //cors policy
 app.use(
   cors({
-    origin: "https://curious-caramel-dd0426.netlify.app",
+    origin: "https://frontend-mern-eclz.onrender.com",
   })
 );
 app.use("/api/auth", require("./routes/authRoute"));
