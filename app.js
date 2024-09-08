@@ -34,14 +34,14 @@ app.use(helmet());
 app.use(hpp());
 
 //cors policy
-app.use(
-  cors({
-    origin: ["https://frontend-mern-eclz.onrender.com"],
-    origin: ["http://localhost:3000/"],
-    methods: ["GET", "POST"],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: ["https://frontend-mern-eclz.onrender.com"],
+//     methods: ["GET", "POST"],
+//     credentials: true,
+//   })
+// );
+app.use(cors({ origin: true }));
 
 // Serve static files from the React app or other front-end framework
 // app.use(express.static(path.join(__dirname, "build")));
