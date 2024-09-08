@@ -36,6 +36,9 @@ app.use(hpp());
 app.use(
   cors({
     origin: "https://frontend-mern-eclz.onrender.com",
+    origin:
+      "https://frontend-mern-eclz.onrender.com/reset-password/:userId/:token",
+    origin: "https://frontend-mern-eclz.onrender.com/products",
   })
 );
 app.use("/api/auth", require("./routes/authRoute"));
