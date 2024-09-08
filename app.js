@@ -36,17 +36,19 @@ app.use(hpp());
 //cors policy
 app.use(
   cors({
-    origin: "https://frontend-mern-eclz.onrender.com",
+    origin: ["https://frontend-mern-eclz.onrender.com"],
+    methods: ["GET", "POST"],
+    credentials: true,
   })
 );
 
 // Serve static files from the React app or other front-end framework
-app.use(express.static(path.join(__dirname, "build")));
+// app.use(express.static(path.join(__dirname, "build")));
 
 // Catch-all handler to return index.html for all routes
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "build", "index.html"));
+// });
 
 app.use("/api/auth", require("./routes/authRoute"));
 app.use("/api/users", require("./routes/usersRoute"));
