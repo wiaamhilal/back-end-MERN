@@ -7,6 +7,7 @@ const xss = require("xss-clean");
 const ratelimiting = require("express-rate-limit");
 const helmet = require("helmet");
 const hpp = require("hpp");
+const path = require("path");
 
 const app = express();
 
@@ -36,11 +37,17 @@ app.use(hpp());
 app.use(
   cors({
     origin: "https://frontend-mern-eclz.onrender.com",
-    origin:
-      "https://frontend-mern-eclz.onrender.com/reset-password/:userId/:token",
-    origin: "https://frontend-mern-eclz.onrender.com/products",
   })
 );
+
+// Serve static files from the React app or other front-end framework
+app.use(express.static(path.join(__dirname, "build")));
+
+// Catch-all handler to return index.html for all routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
 app.use("/api/auth", require("./routes/authRoute"));
 app.use("/api/users", require("./routes/usersRoute"));
 app.use("/api/posts", require("./routes/postsRoute"));
