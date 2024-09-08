@@ -37,6 +37,7 @@ app.use(hpp());
 app.use(
   cors({
     origin: ["https://frontend-mern-eclz.onrender.com"],
+    origin: ["http://localhost:3000/"],
     methods: ["GET", "POST"],
     credentials: true,
   })
