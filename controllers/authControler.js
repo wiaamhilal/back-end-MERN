@@ -114,6 +114,7 @@ module.exports.loginUserCtrl = asyncHander(async (req, res) => {
     profilePhoto: user.profilePhoto,
     token,
     username: user.username,
+    email: user.email,
     isAccountVerified: user.isAccountVerified,
   });
 });
