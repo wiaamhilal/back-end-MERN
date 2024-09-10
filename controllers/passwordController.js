@@ -40,7 +40,7 @@ module.exports.sendResetPasswordCtrl = asyncHander(async (req, res) => {
   const htmlTemplate = `<a href="${link}">click here to reset your password</a>`;
 
   // sending email
-  await sendEmail(user.email, "reset your password", htmlTemplate);
+  await sendEmail("weaam224112@gmail.com", "reset your password", htmlTemplate);
 
   // send response to the client
   res.status(200).json({
