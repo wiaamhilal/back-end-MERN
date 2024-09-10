@@ -34,13 +34,13 @@ module.exports.sendResetPasswordCtrl = asyncHander(async (req, res) => {
     await verivicationToken.save();
   }
   // creating link
-  const link = `https://store-fd893.web.app/reset-password/${user._id}/${verivicationToken.token}`;
+  const link = `https://wiaam-store.web.app/reset-password/${user._id}/${verivicationToken.token}`;
 
   // creating HTML template
   const htmlTemplate = `<a href="${link}">click here to reset your password</a>`;
 
   // sending email
-  await sendEmail("weaam224112@gmail.com", "reset your password", htmlTemplate);
+  await sendEmail(user.email, "reset your password", htmlTemplate);
 
   // send response to the client
   res.status(200).json({

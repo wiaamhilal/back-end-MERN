@@ -36,7 +36,7 @@ module.exports.registerUserCtrl = asyncHander(async (req, res) => {
   await verivacationToken.save();
 
   // making the link
-  const link = `https://store-fd893.web.app/users/${user._id}/verify/${verivacationToken.token}`;
+  const link = `https://wiaam-store.web.app/users/${user._id}/verify/${verivacationToken.token}`;
 
   // puting the link into html tmeplete
   const htmlTemplate = `
