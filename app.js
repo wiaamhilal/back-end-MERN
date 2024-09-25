@@ -51,10 +51,10 @@ app.use(cors({ origin: true }));
 //   res.sendFile(path.join(__dirname, "build", "index.html"));
 // });
 
-app.use((err, req, res, next) => {
-  console.error(err.stack); // سجل تتبع الخطأ
-  res.status(500).send({ message: "حدث خطأ في الخادم" });
-});
+// app.use((err, req, res, next) => {
+//   console.error(err.stack); // سجل تتبع الخطأ
+//   res.status(500).send({ message: "حدث خطأ في الخادم" });
+// });
 
 app.use("/api/auth", require("./routes/authRoute"));
 app.use("/api/users", require("./routes/usersRoute"));
@@ -62,6 +62,7 @@ app.use("/api/posts", require("./routes/postsRoute"));
 app.use("/api/comments", require("./routes/commentsRoute"));
 app.use("/api/category", require("./routes/categoryRoute"));
 app.use("/api/password", require("./routes/passwordRoute"));
+app.use("/api/orders", require("./routes/orders"));
 
 // app.use(express.static("../front/build"));
 

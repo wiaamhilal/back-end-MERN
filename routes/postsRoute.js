@@ -1,4 +1,8 @@
 const {
+  createNewOrderCtrl,
+  getAllOrdersCtrl,
+} = require("../controllers/ordersController");
+const {
   createPostCtrl,
   getAllPostsCtrl,
   getSinglePostCtrl,

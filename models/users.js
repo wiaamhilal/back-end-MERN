@@ -31,6 +31,9 @@ const userSchema = new mongoose.Schema(
     orders: {
       type: Array,
     },
+    orderDate: {
+      type: Number,
+    },
     profilePhoto: {
       type: Object,
       default: {
@@ -43,7 +46,7 @@ const userSchema = new mongoose.Schema(
     },
     isAdmin: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     isAccountVerified: {
       type: Boolean,
