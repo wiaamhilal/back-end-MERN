@@ -10,9 +10,7 @@ const {
   cloudinaryReoveMultipleImage,
 } = require("../utils/cloudinary");
 const fs = require("fs");
-const { timeStamp } = require("console");
 const sendEmail = require("../utils/sendEmail");
-const { date } = require("joi");
 
 //-----------------------------
 // desc get all users profile
@@ -200,70 +198,75 @@ module.exports.createLocationUserCtrl = asyncHander(async (req, res) => {
   res.status(200).json(updatedUser);
 });
 
-// module.exports.getLocationUserCtrl = asyncHander(async (req, res) => {
-//   let user = await User.findById(req.params.id);
-//   if (!user) {
-//     return res.status(404).json({ message: "user not found" });
-//   }
-//   const updatedUser = await User.findByIdAndUpdate(
-//     req.params.id,
-//     {
-//       $set: {
-//         location: {
-//           phone: req.body.phone,
-//           arya: req.body.arya,
-//           street: req.body.street,
-//           building: req.body.building,
-//         },
-//       },
-//     },
-//     { new: true }
-//   );
-//   res.status(200).json(updatedUser);
-// });
+module.exports.getLocationUserCtrl = asyncHander(async (req, res) => {
+  let user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({ message: "user not found" });
+  }
+  const updatedUser = await User.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: {
+        location: {
+          phone: req.body.phone,
+          arya: req.body.arya,
+          street: req.body.street,
+          building: req.body.building,
+        },
+      },
+    },
+    { new: true }
+  );
+  res.status(200).json(updatedUser);
+});
 
-// module.exports.createUserOrdersCtrl = asyncHander(async (req, res) => {
-//   let user = await User.findById(req.params.id);
-//   if (!user) {
-//     return res.status(404).json({ message: "user not found" });
-//   }
+module.exports.createUserOrdersCtrl = asyncHander(async (req, res) => {
+  let user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({ message: "user not found" });
+  }
 
-// let updatedUser = await User.findByIdAndUpdate(
-//   req.params.id,
-//   {
-//     $set: {
-//       orders: [],
-//     },
-//   },
-//   { new: true }
-// );
-// res.status(200).json(updatedUser);
+  // let updatedUser = await User.findByIdAndUpdate(
+  //   req.params.id,
+  //   {
+  //     $set: {
+  //       orders: [],
+  //     },
+  //   },
+  //   { new: true }
+  // );
+  // res.status(200).json(updatedUser);
 
-//   let updatedUser = await User.findByIdAndUpdate(
-//     req.params.id,
-//     {
-//       $set: {
-//         orders: req.body.orders,
-//         orderDate: Date(),
-//       },
-//     },
-//     { new: true }
-//   );
-//   res.status(200).json(updatedUser);
-// });
+  let updatedUser = await User.findByIdAndUpdate(
+    req.params.id,
+    {
+      $push: {
+        orders: req.body.orders,
+      },
+    },
+    { new: true }
+  );
+  res.status(200).json(updatedUser);
+});
 
-// module.exports.sendingConfirmToTheClient = asyncHander(async (req, res) => {
-//   let user = await User.findById(req.params.id);
-//   if (!user) {
-//     return res.status(404).json({ message: "user not found" });
-//   }
-//   // creating HTML template
-//   const htmlTemplate = `
-//       <div>
-//       <h2>thank you ${user.username} for your order</h2>
-//       <p> we will send your order as soom as posible <p>
-//       </div>`;
+module.exports.sendingConfirmToTheClient = asyncHander(async (req, res) => {
+  let user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({ message: "user not found" });
+  }
+  // creating HTML template
+  const link = "https://wiaam-store.web.app/orders";
 
-//   // sending email
-//   await sendEmail(user.email, "the order has been confirmed", htmlTemplate);
-// });
+  const htmlTemplate = `
+      <div>
+      <h2>thank you ${user.username} for your order</h2>
+      <p> we will follow up with you on the details<p>
+      <a href="${link}" style="text-align:center;font-weight:bold;margin:auto;display:flex;justify-content:center;width:fit-content;" >Order Details</a>
+     </div>
+      
+
+      `;
+
+  // sending email
+  await sendEmail(user.email, "your order has been received", htmlTemplate);
+});

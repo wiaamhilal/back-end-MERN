@@ -45,10 +45,10 @@ router
   .put(verifyToken, verfyTokenAndAuthoriation, createLocationUserCtrl);
 
 // /api/users/orders/:id
-// router
-//   .route("/orders/:id")
-//   .put(verifyToken, verfyTokenAndAuthoriation, createUserOrdersCtrl);
+router
+  .route("/orders/:id")
+  .put(verifyToken, verfyTokenAndAuthoriation, createUserOrdersCtrl);
 
 // /api/users/confirm-order/:id
-// router.route("/confirm-order/:id").get(sendingConfirmToTheClient);
+router.route("/confirm-order/:id").get(sendingConfirmToTheClient);
 module.exports = router;
