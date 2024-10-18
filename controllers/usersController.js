@@ -270,3 +270,93 @@ module.exports.sendingConfirmToTheClient = asyncHander(async (req, res) => {
   // sending email
   await sendEmail(user.email, "your order has been received", htmlTemplate);
 });
+
+//-----------------------------
+// desc toggle like
+// route /api/user-like/:id
+// method put
+// access only the logged in user
+//-----------------------------
+module.exports.toggleLikeUserCtrl = asyncHander(async (req, res) => {
+  let user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({ message: "user not found" });
+  }
+  const isPostAlreadyLiked = user.likes.find(
+    (userId) => userId.toString() === req.user.id
+  );
+  if (isPostAlreadyLiked) {
+    user = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $pull: {
+          likes: req.user.id,
+        },
+      },
+      { new: true }
+    );
+  } else {
+    user = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $push: {
+          likes: req.user.id,
+        },
+      },
+      { new: true }
+    );
+  }
+
+  res.status(200).json(user);
+});
+
+//-----------------------------
+// desc toggle dislike
+// route /api/posts/:id
+// method put
+// access only the logged in user
+//-----------------------------
+module.exports.toggleDislikeUserCtrl = asyncHander(async (req, res) => {
+  let user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({ message: "user not found" });
+  }
+  const isPostAlreadyLiked = user.dislikes.find(
+    (userId) => userId.toString() === req.user.id
+  );
+  if (isPostAlreadyLiked) {
+    user = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $pull: {
+          dislikes: req.user.id,
+        },
+      },
+      { new: true }
+    );
+  } else {
+    user = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $push: {
+          dislikes: req.user.id,
+        },
+      },
+      { new: true }
+    );
+  }
+
+  res.status(200).json(user);
+});
+
+module.exports.createRateUserCtrl = asyncHander(async (req, res) => {
+  let user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({ message: "user not found" });
+  }
+  user = await User.findByIdAndUpdate(req.params.id, {
+    $set: {
+      rate: req.body.rate,
+    },
+  });
+});

@@ -52,6 +52,19 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    likes: [
+      {
+        type: mongoose.Types.ObjectId,
+      },
+    ],
+    dislikes: [
+      {
+        type: mongoose.Types.ObjectId,
+      },
+    ],
+    rate: {
+      type: Number,
+    },
   },
   {
     timestamps: true,

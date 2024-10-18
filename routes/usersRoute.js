@@ -8,6 +8,9 @@ const {
   createLocationUserCtrl,
   createUserOrdersCtrl,
   sendingConfirmToTheClient,
+  toggleLikeUserCtrl,
+  toggleDislikeUserCtrl,
+  createRateUserCtrl,
 } = require("../controllers/usersController");
 const {
   verfyTokenAndAdmin,
@@ -22,7 +25,7 @@ const photoUpload = require("../middlewares/photoUpload");
 const router = require("express").Router();
 
 // /api/users/profile/
-router.route("/profile").get(verfyTokenAndAdmin, getAllUsersCtrl);
+router.route("/profile").get(getAllUsersCtrl);
 
 // /api/users/profile/:id
 router
@@ -51,4 +54,16 @@ router
 
 // /api/users/confirm-order/:id
 router.route("/confirm-order/:id").get(sendingConfirmToTheClient);
+
+// /api/users/user-like/:id
+router
+  .route("/user-like/:id")
+  .put(validateObjectId, verifyToken, toggleLikeUserCtrl);
+
+// /api/users/user-dislike/:id
+router
+  .route("/user-dislike/:id")
+  .put(validateObjectId, verifyToken, toggleDislikeUserCtrl);
+
+router.route("user-rate/:id").put(createRateUserCtrl);
 module.exports = router;
