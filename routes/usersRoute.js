@@ -14,7 +14,7 @@ const {
 } = require("../controllers/usersController");
 const {
   verfyTokenAndAdmin,
-  verfyTokenAndUser,
+  verfyTokenAndUser, 
   verifyToken,
   verfyTokenAndAuthoriation,
 } = require("../middlewares/verifyToken");

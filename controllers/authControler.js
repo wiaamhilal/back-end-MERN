@@ -67,7 +67,7 @@ module.exports.loginUserCtrl = asyncHander(async (req, res) => {
     return res.status(400).json({ message: "invalid email" });
   }
   //if passwrd corect
-  const ispasswordMatch = await bcrypt.compare(
+  const ispasswordMatch =  bcrypt.compare(
     req.body.password,
     user.password
   );
