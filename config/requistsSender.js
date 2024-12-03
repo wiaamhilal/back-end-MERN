@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const url = "https://back-end-mern-9wjc.onrender.com";
+const url = "https://wiaam-store.web.app/products";
 
 setInterval(async () => {
   try {
