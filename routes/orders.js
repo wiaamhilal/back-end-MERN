@@ -3,6 +3,7 @@ const {
   getAllOrdersCtrl,
   updateOrderStatus,
   getOrderCountCtrl,
+  getMaxAllOrdersCtrl,
 } = require("../controllers/ordersController");
 const {
   verifyToken,
@@ -22,5 +23,8 @@ router.route("/my-orders/:id").put(verfyTokenAndAdmin, updateOrderStatus);
 
 // /api/orders/count
 router.route("/count").get(getOrderCountCtrl);
+
+// /api/orders/all-orders
+router.route("/all-orders").get(getMaxAllOrdersCtrl);
 
 module.exports = router;

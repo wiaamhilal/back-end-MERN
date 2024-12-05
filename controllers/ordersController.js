@@ -35,6 +35,11 @@ module.exports.getAllOrdersCtrl = asyncHandler(async (req, res) => {
   res.status(200).json(myorders);
 });
 
+module.exports.getMaxAllOrdersCtrl = asyncHandler(async (req, res) => {
+  const myorders = await UserOrder.find().sort({ createdAt: -1 });
+  res.status(200).json(myorders);
+});
+
 // update the order status
 
 module.exports.updateOrderStatus = asyncHandler(async (req, res) => {
