@@ -1,5 +1,6 @@
 const express = require("express");
 const connectToDb = require("./config/connectToDb");
+const requistsSender = require("./config/requistsSender");
 const { notFound, errorHandler } = require("./models/error");
 const cors = require("cors");
 require("dotenv").config();
@@ -12,6 +13,7 @@ const path = require("path");
 const app = express();
 
 connectToDb();
+requistsSender();
 
 // middlewares
 app.use(express.json());
