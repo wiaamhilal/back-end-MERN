@@ -1,12 +1,11 @@
-const axios = require("axios");
+const https = require("https");
 
-const url = "https://wiaam-store.web.app/products";
-
-setInterval(async () => {
-  try {
-    const response = await axios.get(url);
-    console.log(`Pinged ${url}, status code: ${response.status}`);
-  } catch (error) {
-    console.error(`error pinging ${url}:`, error.message);
-  }
-}, 300000);
+setInterval(() => {
+  https
+    .get("https://wiaam-store.web.app/products", (res) => {
+      console.log(`Status Code: ${res.statusCode}`);
+    })
+    .on("error", (err) => {
+      console.error(`Error: ${err.message}`);
+    });
+}, 300000); // Ping every 5 minutes
