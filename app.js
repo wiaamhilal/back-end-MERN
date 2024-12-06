@@ -13,7 +13,6 @@ const path = require("path");
 const app = express();
 
 connectToDb();
-requistsSender();
 
 // middlewares
 app.use(express.json());
@@ -75,6 +74,18 @@ app.use("/api/orders", require("./routes/orders"));
 // error handler middleware
 app.use(notFound);
 app.use(errorHandler);
+
+const https = require("https");
+
+setInterval(() => {
+  https
+    .get("https://back-end-mern-9wjc.onrender.com", (res) => {
+      console.log(`Status Code: ${res.statusCode}`);
+    })
+    .on("error", (err) => {
+      console.error(`Error: ${err.message}`);
+    });
+}, 300000); // Ping every 5 minutes
 
 const PORT = process.env.PORT || 8000;
 
