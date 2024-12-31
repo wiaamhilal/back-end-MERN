@@ -12,6 +12,7 @@ const {
   updatePostImageCtrl,
   toggleLikeCtrl,
   toggleDislikeCtrl,
+  updatePostImage2Ctrl,
 } = require("../controllers/postsController");
 const photoUpload = require("../middlewares/photoUpload");
 const validateObjedtId = require("../middlewares/validateObjedtId");
@@ -22,7 +23,7 @@ const router = require("express").Router();
 // /api/posts
 router
   .route("/")
-  .post(verifyToken, photoUpload.single("image"), createPostCtrl)
+  .post(verifyToken, photoUpload.array("images", 5), createPostCtrl)
   .get(getAllPostsCtrl);
 
 // /api/posts/count
@@ -43,6 +44,16 @@ router
     verifyToken,
     photoUpload.single("image"),
     updatePostImageCtrl
+  );
+
+// /api/posts/update-image2/:id
+router
+  .route("/update-image2/:id")
+  .put(
+    validateObjedtId,
+    verifyToken,
+    photoUpload.single("image"),
+    updatePostImage2Ctrl
   );
 
 // /api/posts/like/:id

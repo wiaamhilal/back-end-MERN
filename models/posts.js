@@ -17,6 +17,9 @@ const postSchema = new mongoose.Schema(
       trim: true,
       minlength: 10,
     },
+    productDetails: {
+      type: String,
+    },
     price: {
       type: Number,
       required: true,
@@ -31,13 +34,34 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    image: {
-      type: Object,
-      default: {
-        url: "",
-        publicId: null,
-      },
+    images: {
+      type: Array,
+      // default: {
+      //   url: "",
+      //   publicId: null,
+      // },
     },
+    // image2: {
+    //   type: Object,
+    //   default: {
+    //     url: "",
+    //     publicId: null,
+    //   },
+    // },
+    // image3: {
+    //   type: Object,
+    //   default: {
+    //     url: "",
+    //     publicId: null,
+    //   },
+    // },
+    // image4: {
+    //   type: Object,
+    //   default: {
+    //     url: "",
+    //     publicId: null,
+    //   },
+    // },
     likes: [
       {
         type: mongoose.Types.ObjectId,
@@ -73,6 +97,7 @@ const validateCreatePost = (obj) => {
   const schema = joi.object({
     title: joi.string().trim().min(2).max(200).required(),
     description: joi.string().trim().min(10).required(),
+    productDetails: joi.string().trim().min(10).required(),
     category: joi.string().trim().required(),
     price: joi.number().required(),
   });

@@ -30,7 +30,7 @@ module.exports.getAllUsersCtrl = asyncHander(async (req, res) => {
 // method GET
 // access public
 //-----------------------------
- 
+
 module.exports.getUserProfileCtrl = asyncHander(async (req, res) => {
   const user = await User.findById(req.params.id)
     .select("-password")

@@ -9,6 +9,8 @@ const {
 const {
   cloudinaryUploadImage,
   cloudinaryReoveImage,
+  cloudinaryUploadImages,
+  cloudinaryReoveMultipleImage,
 } = require("../utils/cloudinary");
 const { Comment } = require("../models/comments");
 const {
@@ -24,38 +26,103 @@ const { User } = require("../models/users");
 // access only logged user
 //-----------------------------
 
+// module.exports.createPostCtrl = asyncHander(async (req, res) => {
+//   // 1-validate image
+//   if (!req.file) {
+//     return res.status(400).json({ message: "no image provided" });
+//   }
+
+//   // 2-validate the data
+//   const { error } = validateCreatePost(req.body);
+//   if (error) res.status(400).json({ message: error.details[0].message });
+
+//   // 3- upload photo
+//   const imagePath = path.join(__dirname, `../images/${req.file.filename}`);
+
+//   const result = await cloudinaryUploadImage(imagePath);
+
+//   // 4-create a new post and save it in DB
+//   let post = await Post.create({
+//     title: req.body.title,
+//     price: req.body.price,
+//     description: req.body.description,
+//     productDetails: req.body.productDetails,
+//     category: req.body.category,
+//     user: req.user.id,
+//     image: {
+//       url: result.secure_url,
+//       publicId: result.public_id,
+//     },
+//   });
+
+//   // 5- send response to the client
+//   res.status(201).json(post);
+
+//   // 6- rmeove the image from the server
+//   fs.unlinkSync(imagePath);
+// });
+
 module.exports.createPostCtrl = asyncHander(async (req, res) => {
-  // 1-validate image
-  if (!req.file) {
-    return res.status(400).json({ message: "no image provided" });
+  // 1- التحقق من وجود الصور
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).json({ message: "No images provided" });
   }
 
-  // 2-validate the data
+  // 2- التحقق من صحة البيانات
   const { error } = validateCreatePost(req.body);
-  if (error) res.status(400).json({ message: error.details[0].message });
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
 
-  // 3- upload photo
-  const imagePath = path.join(__dirname, `../images/${req.file.filename}`);
-  const result = await cloudinaryUploadImage(imagePath);
-
-  // 4-create a new post and save it in DB
-  const post = await Post.create({
-    title: req.body.title,
-    price: req.body.price,
-    description: req.body.description,
-    category: req.body.category,
-    user: req.user.id,
-    image: {
-      url: result.secure_url,
-      publicId: result.public_id,
-    },
+  // 3- رفع الصور إلى Cloudinary
+  const uploadPromises = req.files.map(async (file) => {
+    try {
+      const imagePath = path.join(__dirname, `../images/${file.filename}`);
+      const result = await cloudinaryUploadImage(imagePath);
+      fs.unlink(imagePath, (err) => {
+        if (err) console.error("Error deleting file:", err);
+      });
+      return result;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw new Error("Failed to upload image");
+    }
   });
 
-  // 5- send response to the client
-  res.status(201).json(post);
+  let uploadResults;
+  try {
+    uploadResults = await Promise.all(uploadPromises);
+  } catch (error) {
+    return res.status(500).json({ message: "Image upload failed" });
+  }
 
-  // 6- rmeove the image from the server
-  fs.unlinkSync(imagePath);
+  // 4- إنشاء المنشور وحفظه في قاعدة البيانات
+  const images = uploadResults.map((result) => ({
+    url: result.secure_url,
+    publicId: result.public_id,
+  }));
+
+  let post;
+  try {
+    post = await Post.create({
+      title: req.body.title,
+      price: req.body.price,
+      description: req.body.description,
+      productDetails: req.body.productDetails,
+      category: req.body.category,
+      user: req.user.id,
+      images,
+    });
+  } catch (error) {
+    console.error("Error creating post:", error);
+    return res.status(500).json({ message: "Failed to create post" });
+  }
+
+  // 5- الرد النهائي
+  res.status(201).json({
+    message: "Post created successfully",
+    post,
+  });
 });
 
 //-----------------------------
@@ -126,8 +193,10 @@ module.exports.deletePostCtrl = asyncHander(async (req, res) => {
     return res.status(404).json({ message: "post not found" });
   }
   if (req.user.isAdmin || req.user.id === post.user.toString()) {
+    const publicIds = post.images?.map((post) => post.publicId);
+
     await Post.findByIdAndDelete(req.params.id);
-    await cloudinaryReoveImage(post.image.publicId);
+    await cloudinaryReoveMultipleImage(publicIds);
 
     // TODO - delete all comments that belong to the post
     await Comment.deleteMany({ postId: post._id });
@@ -224,6 +293,55 @@ module.exports.updatePostImageCtrl = asyncHander(async (req, res) => {
     {
       $set: {
         image: {
+          url: result.secure_url,
+          publicId: result.public_id,
+        },
+      },
+    },
+    { new: true }
+  );
+
+  // 7- send response to the client
+  res.status(200).json(updatePost);
+
+  // 8- delete the image from the server
+  fs.unlinkSync(imagePath);
+});
+
+module.exports.updatePostImage2Ctrl = asyncHander(async (req, res) => {
+  // 1-validation
+  if (!req.file) {
+    return res.status(400).json({ message: "its not an image" });
+  }
+
+  // 2-get the post from DB and check of the post is exist
+  const post = await Post.findById(req.params.id);
+  if (!post) {
+    res.status(404).json({ message: "post not found" });
+  }
+
+  // 3-check if the post belong to this user
+  if (req.user.id !== post.user.toString()) {
+    return res
+      .status(403)
+      .json({ message: "unauthoraized , you cant update the user" });
+  }
+
+  // 4- delete the old image
+  if (post.image.publicId) {
+    await cloudinaryReoveImage(post.image2.publicId);
+  }
+
+  // 5- upload a new image
+  const imagePath = path.join(__dirname, `../images/${req.file.filename}`);
+  const result = await cloudinaryUploadImage(imagePath);
+
+  // 6- update the image field in the DB
+  const updatePost = await Post.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: {
+        image2: {
           url: result.secure_url,
           publicId: result.public_id,
         },
