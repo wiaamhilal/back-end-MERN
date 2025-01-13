@@ -112,6 +112,7 @@ module.exports.createPostCtrl = asyncHander(async (req, res) => {
       category: req.body.category,
       user: req.user.id,
       images,
+      colors: req.body.colors,
     });
   } catch (error) {
     console.error("Error creating post:", error);

@@ -11,6 +11,7 @@ const cloudinaryUploadImage = async (myImage) => {
   try {
     const data = await cloudinary.uploader.upload(myImage, {
       resourse_type: "auto",
+      overwrite: false,
     });
     return data;
   } catch (error) {
@@ -57,7 +58,7 @@ const cloudinaryReoveImage = async (imagePublicId) => {
 //cloudinary remove multiple image
 const cloudinaryReoveMultipleImage = async (publicIds) => {
   try {
-    const result = await cloudinary.v2.api.delete_all_resources(publicIds);
+    const result = await cloudinary.v2.api.delete_resources(publicIds);
     return result;
   } catch (error) {
     console.log(error);

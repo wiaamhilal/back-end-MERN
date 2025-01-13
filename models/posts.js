@@ -41,7 +41,10 @@ const postSchema = new mongoose.Schema(
       //   publicId: null,
       // },
     },
-    // image2: {
+    colors: {
+      type: Array,
+    },
+    // image: {
     //   type: Object,
     //   default: {
     //     url: "",
@@ -100,6 +103,7 @@ const validateCreatePost = (obj) => {
     productDetails: joi.string().trim().min(10).required(),
     category: joi.string().trim().required(),
     price: joi.number().required(),
+    colors: joi.required(),
   });
   return schema.validate(obj);
 };
