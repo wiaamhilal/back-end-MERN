@@ -13,6 +13,7 @@ const {
   toggleLikeCtrl,
   toggleDislikeCtrl,
   updatePostImage2Ctrl,
+  getAllMaxPostsCtrl,
 } = require("../controllers/postsController");
 const photoUpload = require("../middlewares/photoUpload");
 const validateObjedtId = require("../middlewares/validateObjedtId");
@@ -25,6 +26,9 @@ router
   .route("/")
   .post(verifyToken, photoUpload.array("images", 5), createPostCtrl)
   .get(getAllPostsCtrl);
+
+// /api/posts/max-posts
+router.route("/max-posts").get(getAllMaxPostsCtrl);
 
 // /api/posts/count
 router.route("/count").get(getPostCountCtrl);

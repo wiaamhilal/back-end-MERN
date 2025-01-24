@@ -103,7 +103,7 @@ const validateCreatePost = (obj) => {
     productDetails: joi.string().trim().min(10).required(),
     category: joi.string().trim().required(),
     price: joi.number().required(),
-    colors: joi.required(),
+    // colors: joi.trim(),
   });
   return schema.validate(obj);
 };

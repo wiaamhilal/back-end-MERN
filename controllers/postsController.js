@@ -133,8 +133,10 @@ module.exports.createPostCtrl = asyncHander(async (req, res) => {
 // access public
 //-----------------------------
 module.exports.getAllPostsCtrl = asyncHander(async (req, res) => {
-  const POST_PER_PAGE = 8;
+  let POST_PER_PAGE = 8;
+
   const { pageNumber, category } = req.query;
+
   let posts;
   if (pageNumber) {
     posts = await Post.find()
@@ -151,6 +153,14 @@ module.exports.getAllPostsCtrl = asyncHander(async (req, res) => {
       .sort({ createdAt: -1 })
       .populate("user", ["-password"]);
   }
+  res.status(200).json(posts);
+});
+
+module.exports.getAllMaxPostsCtrl = asyncHander(async (req, res) => {
+  const posts = await Post.find()
+    .sort({ createdAt: -1 })
+    .populate("user", ["-password"]);
+
   res.status(200).json(posts);
 });
 
