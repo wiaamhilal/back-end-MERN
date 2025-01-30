@@ -85,7 +85,7 @@ setInterval(() => {
     .on("error", (err) => {
       console.error(`Error: ${err.message}`);
     });
-}, 300000); // Ping every 5 minutes
+}, 600000); // Ping every 5 minutes
 
 const PORT = process.env.PORT || 8000;
 
