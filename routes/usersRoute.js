@@ -11,10 +11,11 @@ const {
   toggleLikeUserCtrl,
   toggleDislikeUserCtrl,
   createRateUserCtrl,
+  changeUserAuthCtrl,
 } = require("../controllers/usersController");
 const {
   verfyTokenAndAdmin,
-  verfyTokenAndUser, 
+  verfyTokenAndUser,
   verifyToken,
   verfyTokenAndAuthoriation,
 } = require("../middlewares/verifyToken");
@@ -66,4 +67,9 @@ router
   .put(validateObjectId, verifyToken, toggleDislikeUserCtrl);
 
 router.route("user-rate/:id").put(createRateUserCtrl);
+
+// /api/users/user-auth/:id
+router
+  .route("/user-auth/:id")
+  .put(validateObjectId, verfyTokenAndAdmin, changeUserAuthCtrl);
 module.exports = router;

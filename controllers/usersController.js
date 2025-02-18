@@ -360,3 +360,21 @@ module.exports.createRateUserCtrl = asyncHander(async (req, res) => {
     },
   });
 });
+
+module.exports.changeUserAuthCtrl = asyncHander(async (req, res) => {
+  let user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({ message: "user not found" });
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: {
+        isAdmin: req.body.isAdmin,
+      },
+    },
+    { new: true }
+  );
+  res.status(200).json(updatedUser);
+});
