@@ -87,6 +87,28 @@ setInterval(() => {
     });
 }, 600000); // Ping every 5 minutes
 
+// translate the website
+const translate = require("google-translate-api-x");
+
+const translateRoutes = require("./routes/translate");
+app.use("/api/translate", translateRoutes);
+
+app.post("/api/translate", async (req, res) => {
+  try {
+    const { text, targetLang } = req.body;
+    if (!text || !targetLang)
+      return res.status(400).json({ error: "Missing parameters" });
+
+    const result = await translate(text, { to: targetLang });
+    res.json({ translatedText: result.text });
+  } catch (error) {
+    console.error("Translation error:", error);
+    res
+      .status(500)
+      .json({ error: "Translation failed", details: error.message });
+  }
+});
+
 const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => console.log("port is running 8000"));
