@@ -187,6 +187,8 @@ module.exports.createLocationUserCtrl = asyncHander(async (req, res) => {
       $set: {
         location: {
           phone: req.body.phone,
+          country: req.body.country,
+          city: req.body.city,
           arya: req.body.arya,
           street: req.body.street,
           building: req.body.building,
