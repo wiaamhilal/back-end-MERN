@@ -6,7 +6,7 @@ module.exports = async (userEmail, subject, htmlTemplate) => {
       service: "gmail",
       auth: {
         user: "weaam224112@gmail.com", //sender
-        pass: "ohnp jeix dehf swlp",
+        pass: "gnxq xofa ramn bhvl",
       },
     });
     const mailOptions = {
@@ -18,7 +18,7 @@ module.exports = async (userEmail, subject, htmlTemplate) => {
     const info = await transporter.sendMail(mailOptions);
     console.log("email sent: " + info.response);
   } catch (error) {
-    console.log(error);
+    console.error("حدث خطأ أثناء إرسال الإيميل: ", error);
     throw new Error("internal server error (nodemailer)");
   }
 };

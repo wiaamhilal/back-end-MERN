@@ -6,25 +6,15 @@ const userOrdersSchema = new mongoose.Schema(
     orderDetails: {
       type: Object,
       required: true,
-      //   ref: "Post",
-      //   trim: true,
-      //   minlength: 2,
-      //   maxlenth: 100,
     },
     userDetails: {
       type: mongoose.Schema.Types.ObjectId,
-      // ref: "User",
     },
     userInfo: {
       type: Object,
       require: true,
     },
-    // imageURL: {
-    //   type: String,
-    //   required: true,
-    //   trim: true,
-    //   minlength: 2,
-    // },
+
     orderStatus: {
       type: String,
       required: true,
@@ -33,23 +23,8 @@ const userOrdersSchema = new mongoose.Schema(
   {
     timeseries: true,
     timestamps: true,
-    // toJSON: { virtuals: true },
-    // toObject: { virtuals: true },
   }
 );
-
-// populate comment for this post
-// userOrdersSchema.virtual("users", {
-//   ref: "User",
-//   foreignField: "user._id",
-//   localField: "userDetails",
-// });
-
-// postSchema.virtual("posts", {
-//     ref: "Post",
-//     foreignField: "post._id",
-//     localField: "post",
-//   });
 
 const validateCreateOrder = (obj) => {
   const schema = Joi.object({

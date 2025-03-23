@@ -4,6 +4,10 @@ const {
   updateOrderStatus,
   getOrderCountCtrl,
   getMaxAllOrdersCtrl,
+  returnOrderCtrl,
+  getAllReturnOrdersCtrl,
+  sendEmailConfirmCtrl,
+  sendEmailDiclineCtrl,
 } = require("../controllers/ordersController");
 const {
   verifyToken,
@@ -27,4 +31,14 @@ router.route("/count").get(getOrderCountCtrl);
 // /api/orders/all-orders
 router.route("/all-orders").get(getMaxAllOrdersCtrl);
 
+// api/orders/return-order
+router
+  .route("/return-order")
+  .post(verifyToken, returnOrderCtrl)
+  .get(getAllReturnOrdersCtrl);
+
+// api/orders/approve-return
+router.route("/approve-return").post(verfyTokenAndAdmin, sendEmailConfirmCtrl);
+
+router.route("/reject-return").post(verfyTokenAndAdmin, sendEmailDiclineCtrl);
 module.exports = router;
