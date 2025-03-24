@@ -79,13 +79,13 @@ const https = require("https");
 
 setInterval(() => {
   https
-    .get("https://back-end-mern-9wjc.onrender.com", (res) => {
+    .get("https://back-end-mern-1-c5va.onrender.com", (res) => {
       console.log(`Status Code: ${res.statusCode}`);
     })
     .on("error", (err) => {
       console.error(`Error: ${err.message}`);
     });
-}, 300000); // Ping every 13 minutes
+}, 840000); // Ping every 14 minutes
 
 // translate the website
 const translate = require("google-translate-api-x");
