@@ -110,6 +110,7 @@ module.exports.createPostCtrl = asyncHander(async (req, res) => {
       description: req.body.description,
       productDetails: req.body.productDetails,
       category: req.body.category,
+      mainCategory: req.body.mainCategory,
       user: req.user.id,
       images,
       colors: req.body.colors,

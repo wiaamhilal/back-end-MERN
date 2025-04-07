@@ -34,6 +34,10 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    mainCategory: {
+      type: String,
+      required: true,
+    },
     images: {
       type: Array,
       // default: {
@@ -103,7 +107,8 @@ const validateCreatePost = (obj) => {
     productDetails: joi.string().trim().min(10).required(),
     category: joi.string().trim().required(),
     price: joi.number().required(),
-    // colors: joi.trim(),
+    mainCategory: joi.string().trim().required(),
+    colors: joi.array(),
   });
   return schema.validate(obj);
 };

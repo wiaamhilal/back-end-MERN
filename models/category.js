@@ -9,10 +9,22 @@ const categorySchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    title: {
+    mainTitle: {
       type: String,
       required: true,
       trim: true,
+    },
+    branchTitle: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    images: {
+      type: Array,
+      // default: {
+      //   url: "",
+      //   publicId: null,
+      // },
     },
   },
   {
@@ -26,7 +38,9 @@ const Category = mongoose.model("Category", categorySchema);
 // validate create category
 function validateCreateCategory(obj) {
   const schema = joi.object({
-    title: joi.string().trim().required(),
+    mainTitle: joi.string().trim().required(),
+    branchTitle: joi.string().trim().required(),
+    // images: joi.array(),
   });
   return schema.validate(obj);
 }
