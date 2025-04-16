@@ -137,6 +137,8 @@ module.exports.dlelteCategorieCtrl = asyncHandler(async (req, res) => {
   if (!category) {
     return res.status(404).json({ message: "category not found" });
   }
+  const publicIds = category.images?.map((cate) => cate.publicId);
+  await cloudinaryReoveMultipleImage(publicIds);
   await Category.findByIdAndDelete(req.params.id);
   res
     .status(200)
