@@ -5,12 +5,12 @@ module.exports = async (userEmail, subject, htmlTemplate) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "weaam224112@gmail.com", //sender
-        pass: "gnxq xofa ramn bhvl",
+        user: "wiaambusiness28@gmail.com", //sender
+        pass: "qiod bmnx aihv dsbh",
       },
     });
     const mailOptions = {
-      from: "weaam224112@gmail.com", // sender
+      from: "wiaambusiness28@gmail.com", // sender
       to: userEmail,
       subject: subject,
       html: htmlTemplate,
