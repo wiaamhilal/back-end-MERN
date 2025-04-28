@@ -85,7 +85,7 @@ setInterval(() => {
     .on("error", (err) => {
       console.error(`Error: ${err.message}`);
     });
-}, 840000); // Ping every 14 minutes
+}, 600000); // Ping every 10 minutes
 
 // translate the website
 const translate = require("google-translate-api-x");
