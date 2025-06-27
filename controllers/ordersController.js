@@ -1,8 +1,16 @@
 const asyncHandler = require("express-async-handler");
 const { User } = require("../models/users");
 const { UserOrder } = require("../models/orders");
-const { ReturnOrder } = require("../models/returnOrder");
+const { ReturnOrder, validateReturnOrder } = require("../models/returnOrder");
 const sendEmail = require("../utils/sendEmail");
+const path = require("path");
+const fs = require("fs");
+const {
+  cloudinaryUploadImage,
+  cloudinaryReoveImage,
+  cloudinaryUploadImages,
+  cloudinaryReoveMultipleImage,
+} = require("../utils/cloudinary");
 
 module.exports.createNewOrderCtrl = asyncHandler(async (req, res) => {
   const user = await User.find({ _id: req.user.id });
@@ -70,16 +78,94 @@ module.exports.getOrderCountCtrl = asyncHandler(async (req, res) => {
   res.status(200).json(count);
 });
 
+// module.exports.returnOrderCtrl = asyncHandler(async (req, res) => {
+//   const user = await User.findById(req.user.id);
+//   if (!user) {
+//     res.status(404).json({ message: "user not found" });
+//   }
+
+//   const uploadPromises = req.files.map(async (file) => {
+//     try {
+//       const imagePath = path.join(__dirname, `../images/${file.filename}`);
+//       const result = await cloudinaryUploadImage(imagePath);
+//       fs.unlink(imagePath, (err) => {
+//         if (err) console.error("Error deleting file:", err);
+//       });
+//       return result;
+//     } catch (error) {
+//       console.error("Error uploading image:", error);
+//       throw new Error("Failed to upload image");
+//     }
+//   });
+
+//   let uploadResults;
+//   try {
+//     uploadResults = await Promise.all(uploadPromises);
+//   } catch (error) {
+//     return res.status(500).json({ message: "Image upload failed" });
+//   }
+
+//   // 4- إنشاء المنشور وحفظه في قاعدة البيانات
+//   const images = uploadResults.map((result) => ({
+//     url: result.secure_url,
+//     publicId: result.public_id,
+//   }));
+
+//   const returnedOrder = await ReturnOrder.create({
+//     user: user,
+//     order: req.body.order,
+//     reason: req.body.reason,
+//     images: images,
+//   });
+//   res.status(201).json(returnedOrder);
+// });
+
 module.exports.returnOrderCtrl = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
   if (!user) {
-    res.status(404).json({ message: "user not found" });
+    return res.status(404).json({ message: "User not found" });
   }
+
+  // const { error } = validateReturnOrder(req.body);
+  // if (error) {
+  //   return res.status(400).json({ message: error.details[0].message });
+  // }
+
+  const uploadPromises = (req.files || []).map(async (file) => {
+    try {
+      const imagePath = path.join(__dirname, `../images/${file.filename}`);
+      console.log("Uploading image:", imagePath);
+
+      const result = await cloudinaryUploadImage(imagePath);
+
+      fs.unlink(imagePath, (err) => {
+        if (err) console.error("Error deleting file:", err);
+      });
+
+      return {
+        url: result.secure_url,
+        publicId: result.public_id,
+      };
+    } catch (error) {
+      console.error("Upload error:", error.message);
+      throw error;
+    }
+  });
+
+  let images = [];
+  try {
+    images = await Promise.all(uploadPromises);
+  } catch (error) {
+    return res.status(500).json({ message: "Image upload failed !" });
+  }
+  const orderData = JSON.parse(req.body.order);
   const returnedOrder = await ReturnOrder.create({
     user: user,
-    order: req.body.order,
+    order: orderData,
     reason: req.body.reason,
+    images: images,
   });
+
   res.status(201).json(returnedOrder);
 });
 
@@ -102,6 +188,9 @@ module.exports.sendEmailConfirmCtrl = asyncHandler(async (req, res) => {
   // sending email to the user
   await sendEmail(userEmail, "Request return order", htmlTemplate);
 
+  const myOrderRecuist = await ReturnOrder.findById(req.body.id);
+  const publicIds = myOrderRecuist.images?.map((post) => post.publicId);
+  await cloudinaryReoveMultipleImage(publicIds);
   await ReturnOrder.findByIdAndDelete(req.body.id);
 
   res
@@ -122,6 +211,9 @@ module.exports.sendEmailDiclineCtrl = asyncHandler(async (req, res) => {
   // sending email to the user
   await sendEmail(userEmail, "Request return order", htmlTemplate);
 
+  const myOrderRecuist = await ReturnOrder.findById(req.body.id);
+  const publicIds = myOrderRecuist.images?.map((post) => post.publicId);
+  await cloudinaryReoveMultipleImage(publicIds);
   await ReturnOrder.findByIdAndDelete(req.body.id);
 
   res

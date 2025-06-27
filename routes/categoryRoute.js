@@ -6,6 +6,9 @@ const {
   getAllCategoriesCtrl,
   dlelteCategorieCtrl,
   createCategoryCtrl2,
+  createadCtrl,
+  getAlladsCtrl,
+  deleteAdCtrl,
 } = require("../controllers/categorysController");
 const photoUpload = require("../middlewares/photoUpload");
 
@@ -33,4 +36,12 @@ router
   .route("/:id")
   .delete(validateObjectId, verfyTokenAndAdmin, dlelteCategorieCtrl);
 
+//api/categories/createad
+router
+  .route("/createad")
+  .post(verfyTokenAndAdmin, createadCtrl)
+  .get(getAlladsCtrl);
+
+//api/categories/createad/:id
+router.route("/createad/:id").delete(verfyTokenAndAdmin, deleteAdCtrl);
 module.exports = router;

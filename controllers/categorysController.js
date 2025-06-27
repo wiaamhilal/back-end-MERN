@@ -8,6 +8,7 @@ const {
   cloudinaryUploadImages,
   cloudinaryReoveMultipleImage,
 } = require("../utils/cloudinary");
+const { Createad, valedateCreateAd } = require("../models/Createad");
 
 //-----------------------------
 // desc greate a new category
@@ -143,4 +144,40 @@ module.exports.dlelteCategorieCtrl = asyncHandler(async (req, res) => {
   res
     .status(200)
     .json({ message: "category has been deleted", categoryId: category._id });
+});
+
+// create ad
+module.exports.createadCtrl = asyncHandler(async (req, res) => {
+  // 2-validate the data
+  const { error } = valedateCreateAd(req.body);
+  if (error) res.status(400).json({ message: error.details[0].message });
+
+  const user = await User;
+  // const user = await User.findById(req.user.id);
+
+  // 4-create a new client comment and save it in DB
+  const createad = await Createad.create({
+    category: req.body.category,
+    range: req.body.range,
+    url: req.body.url,
+    user: req.user,
+  });
+
+  // 5- send response to the client
+  res.status(201).json(createad);
+});
+
+// create ad
+module.exports.getAlladsCtrl = asyncHandler(async (req, res) => {
+  const allAds = await Createad.find();
+  res.status(200).json(allAds);
+});
+
+module.exports.deleteAdCtrl = asyncHandler(async (req, res) => {
+  const ads = await Createad.findById(req.params.id);
+  if (!ads) {
+    return res.status(404).json({ message: "ad not found" });
+  }
+  await Createad.findByIdAndDelete(req.params.id);
+  res.status(200).json({ message: "ad has been deleted", adId: ads._id });
 });

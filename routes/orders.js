@@ -9,11 +9,13 @@ const {
   sendEmailConfirmCtrl,
   sendEmailDiclineCtrl,
 } = require("../controllers/ordersController");
+
 const {
   verifyToken,
   verfyTokenAndAdmin,
 } = require("../middlewares/verifyToken");
 
+const photoUpload = require("../middlewares/photoUpload");
 const router = require("express").Router();
 
 // /api/orders/my-orders
@@ -34,7 +36,7 @@ router.route("/all-orders").get(getMaxAllOrdersCtrl);
 // api/orders/return-order
 router
   .route("/return-order")
-  .post(verifyToken, returnOrderCtrl)
+  .post(verifyToken, photoUpload.array("images", 3), returnOrderCtrl)
   .get(getAllReturnOrdersCtrl);
 
 // api/orders/approve-return

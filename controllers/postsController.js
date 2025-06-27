@@ -107,6 +107,7 @@ module.exports.createPostCtrl = asyncHander(async (req, res) => {
     post = await Post.create({
       title: req.body.title,
       price: req.body.price,
+      oldPrice: null,
       description: req.body.description,
       productDetails: req.body.productDetails,
       category: req.body.category,
@@ -256,6 +257,8 @@ module.exports.updatePostCtrl = asyncHander(async (req, res) => {
         title: req.body.title,
         description: req.body.description,
         category: req.body.category,
+        price: req.body.price,
+        oldPrice: req.body.oldPrice,
       },
     },
     { new: true }

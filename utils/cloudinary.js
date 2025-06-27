@@ -10,7 +10,7 @@ cloudinary.config({
 const cloudinaryUploadImage = async (myImage) => {
   try {
     const data = await cloudinary.uploader.upload(myImage, {
-      resourse_type: "auto",
+      resource_type: "auto",
       overwrite: false,
     });
     return data;
